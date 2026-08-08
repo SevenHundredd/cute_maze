@@ -1,7 +1,9 @@
 from typing import Optional
-from dotenv import dotenv_values
-from pydantic import BaseModel, Field, model_validator, ValidationError, field_validator
-
+try:
+    from dotenv import dotenv_values
+    from pydantic import BaseModel, Field, model_validator, ValidationError, field_validator
+except ImportError as e:
+    raise SystemExit(f"Required module not found: {e.name}. Please install the required modules using 'make install'.")
 
 class MazeConfig(BaseModel):
     width: int = Field(..., ge=3, alias='WIDTH')
@@ -15,7 +17,12 @@ class MazeConfig(BaseModel):
     @field_validator('entry', 'exit', mode='before')
     @classmethod
     def validate_coordinates(cls, value: str) -> tuple[int, int]:
-        return tuple(map(int, value.split(',')))
+        if isinstance(value, tuple) and len(value) == 2:
+            return value
+        elif isinstance(value, str):
+            return tuple(map(int, value.split(',')))
+        else: 
+            raise ValueError("Coordinates must be a tuple of two integers or a string in the format 'x,y'.")
 
     @field_validator('perfect', mode='before')
     @classmethod

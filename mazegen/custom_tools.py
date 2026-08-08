@@ -1,7 +1,7 @@
 from .generator import MazeGenerator
 import subprocess
 import sys
-
+#custom themes need more themes
 RESET = "\033[0m"
 
 RED = "\033[31m"
@@ -47,7 +47,6 @@ THEMES={
 }
 
 def clear_screen() -> None:
-    """Clears the terminal screen."""
     if sys.platform.startswith('win'):
         subprocess.run(['cls'], check=True, shell=True)
     else:
@@ -63,29 +62,28 @@ def maze_frame(generator: MazeGenerator, path: list[tuple[int, int]], theme_name
     entry = generator.entry
     exit = generator.exit
     pattern_42 = generator.ignore
+    animated_grid = []
 
-    print(theme["wall"] * (width * 2 + 1))
+    animated_grid.append(theme["wall"] * (width * 2 + 1))
     for y in range(height):
-        row = theme["wall"]
+        animated_grid.append(theme["wall"])
         for x in range(width):
             pos = (x, y)
             if pos == entry:
-                row += theme['entry']
+                animated_grid.append(theme['entry'])
             elif pos == exit:
-                row += theme['exit']
+                animated_grid.append(theme['exit'])
             elif pos in path_set:
-                row += theme['path']
+                animated_grid.append(theme['path'])
             elif pos in pattern_42:
-                row += theme['pattern_42']
+                animated_grid.append(theme['pattern_42'])
             else:
-                row += theme['space']
-            row += theme["wall"] if grid[y][x] & 2 or (x == width - 1) else theme["space"]
-        print(row)
+                animated_grid.append(theme['space'])
+            animated_grid.append(theme["wall"] if grid[y][x] & 2 or (x == width - 1) else theme["space"])
 
-        bottom_row = theme["wall"]
+        animated_grid.append(theme["wall"])
         for x in range(width):
-            bottom_row += theme["wall"] if grid[y][x] & 4 or (y == height - 1) else theme["space"]
-            bottom_row += theme["wall"]
+            animated_grid.append(theme["wall"] if grid[y][x] & 4 or (y == height - 1) else theme["space"])
+        animated_grid.append(theme["wall"])
 
-        print(bottom_row)
-
+    print('\n'.join(animated_grid))
