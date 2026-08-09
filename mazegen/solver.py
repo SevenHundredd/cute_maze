@@ -24,7 +24,7 @@ class MazeSolver:
         seen = {self.entry}
 
         while queue:
-            x, y , path = queue.pop(0)
+            x, y, path = queue.pop(0)
             if (x, y) == self.exit:
                 return path
 

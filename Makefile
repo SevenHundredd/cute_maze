@@ -17,7 +17,7 @@ debug:
 	$(PYTHON) -m pdb $(MAIN_SCRIPT) $(CONFIG_FILE)
 
 clean:
-	rm -rf __pycache__ */__pycache__ .mypy_cache .pytest_cache *.egg-info dist build maze.txt venv
+	rm -rf __pycache__ */__pycache__ .mypy_cache .pytest_cache *.egg-info dist build maze.txt venv */.mypy_cache */.pytest_cache */*.egg-info */dist */build
 
 lint:
 	$(PYTHON) -m flake8 .

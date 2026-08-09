@@ -52,6 +52,9 @@ class MazeGenerator:
 
     def add_pattern_42(self) -> None:
         self.get_pattern_42()
+        if self.entry in self.ignore or self.exit in self.ignore:
+            self.ignore = set()
+            return
         for x, y in self.ignore:
             self.grid[y][x] = 15
 
@@ -102,8 +105,6 @@ class MazeGenerator:
         if self.config.seed is not None:
             random.seed(self.config.seed)
         self.get_pattern_42()
-        if self.entry in self.ignore or self.exit in self.ignore:
-            self.ignore = set()
         if (self.height >= 7 and self.width >= 9):
             self.add_pattern_42()
         self.generate_maze()

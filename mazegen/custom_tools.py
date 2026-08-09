@@ -1,7 +1,8 @@
 from .generator import MazeGenerator
 import subprocess
 import sys
-#custom themes need more themes
+from time import sleep
+
 RESET = "\033[0m"
 
 RED = "\033[31m"
@@ -47,43 +48,54 @@ THEMES={
 }
 
 def clear_screen() -> None:
+    """Clears the terminal screen."""
     if sys.platform.startswith('win'):
         subprocess.run(['cls'], check=True, shell=True)
     else:
         subprocess.run(['clear'], check=True, shell=True)
 
-def maze_frame(generator: MazeGenerator, path: list[tuple[int, int]], theme_name: str) -> None:
+def maze_frame(generator: MazeGenerator, grid: list[list[int]], path: list[tuple[int, int]], theme_name: str) -> None:
+    print(f"Entry: {generator.entry}, Exit: {generator.exit}, Perfect: {generator.config.perfect}, Seed: {generator.config.seed}")
     theme = THEMES[theme_name]
     path_set = set(path)
 
-    grid = generator.grid
     width = generator.width
     height = generator.height
     entry = generator.entry
     exit = generator.exit
-    pattern_42 = generator.ignore
-    animated_grid = []
+    pattern_42 = set() if generator.entry in generator.ignore or generator.exit in generator.ignore else generator.ignore
 
-    animated_grid.append(theme["wall"] * (width * 2 + 1))
+    print(theme["wall"] * (width * 2 + 1))
     for y in range(height):
-        animated_grid.append(theme["wall"])
+        row = theme["wall"]
         for x in range(width):
             pos = (x, y)
             if pos == entry:
-                animated_grid.append(theme['entry'])
+                row += theme['entry']
             elif pos == exit:
-                animated_grid.append(theme['exit'])
+                row += theme['exit']
             elif pos in path_set:
-                animated_grid.append(theme['path'])
+                row += theme['path']
             elif pos in pattern_42:
-                animated_grid.append(theme['pattern_42'])
+                row += theme['pattern_42']
             else:
-                animated_grid.append(theme['space'])
-            animated_grid.append(theme["wall"] if grid[y][x] & 2 or (x == width - 1) else theme["space"])
+                row += theme['space']
+            row += theme["wall"] if grid[y][x] & 2 or (x == width - 1) else theme["space"]
+        print(row)
 
-        animated_grid.append(theme["wall"])
+        bottom_row = theme["wall"]
         for x in range(width):
-            animated_grid.append(theme["wall"] if grid[y][x] & 4 or (y == height - 1) else theme["space"])
-        animated_grid.append(theme["wall"])
+            bottom_row += theme["wall"] if grid[y][x] & 4 or (y == height - 1) else theme["space"]
+            bottom_row += theme["wall"]
 
-    print('\n'.join(animated_grid))
+        print(bottom_row)
+
+def animated_frame(generator: MazeGenerator, grid: list[list[int]], path: list[tuple[int, int]], theme_name: str) -> None:
+    start_grid = [[15 for _ in range(generator.width)] for _ in range(generator.height)]
+    for y in range(generator.height):
+        for x in range(generator.width):
+            start_grid[y][x] = grid[y][x]
+            maze_frame(generator, start_grid, path, theme_name)
+            sleep(0.05)
+            clear_screen()
+
