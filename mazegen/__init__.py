@@ -1,5 +1,4 @@
-from .config import MazeConfig, load_config
-from .generator import MazeGenerator
+from .generator import MazeGenerator , load_config
 from .exporter import export_maze
 from .solver import MazeSolver
 from .custom_tools import maze_frame, clear_screen, animated_frame, THEMES
