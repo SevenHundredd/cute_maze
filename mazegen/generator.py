@@ -5,6 +5,7 @@ validates a maze configuration and generates the maze grid itself. Each
 cell of the grid is stored as an integer bitmask of its closed walls
 (NORTH=1, EAST=2, SOUTH=4, WEST=8).
 """
+
 import random
 from typing import Optional
 try:
