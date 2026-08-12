@@ -1,3 +1,9 @@
+"""Pathfinding for a maze grid produced by MazeGenerator.
+
+Provides MazeSolver, which finds the shortest path between an entry
+and an exit cell in a wall-bitmask grid using breadth-first search.
+"""
+
 NORTH = 1
 EAST = 2
 SOUTH = 4
@@ -12,7 +18,29 @@ MOVES = {
 
 
 class MazeSolver:
-    def __init__(self, grid: list[list[int]], entry: tuple[int, int], exit: tuple[int, int]):
+    """Finds the shortest path between two cells of a maze grid.
+
+    Attributes:
+        grid: The maze grid, one wall-bitmask integer per cell.
+        entry: (x, y) coordinates of the starting cell.
+        exit: (x, y) coordinates of the target cell.
+        height: Number of rows in the grid.
+        width: Number of columns in the grid.
+    """
+
+    def __init__(
+        self,
+        grid: list[list[int]],
+        entry: tuple[int, int],
+        exit: tuple[int, int],
+    ):
+        """Initialize the solver for a given grid, entry and exit.
+
+        Args:
+            grid: The maze grid, one wall-bitmask integer per cell.
+            entry: (x, y) coordinates of the starting cell.
+            exit: (x, y) coordinates of the target cell.
+        """
         self.grid = grid
         self.entry = entry
         self.exit = exit
@@ -20,6 +48,12 @@ class MazeSolver:
         self.width = len(grid[0])
 
     def solve(self) -> list[tuple[int, int]]:
+        """Find the shortest path from entry to exit using BFS.
+
+        Returns:
+            The list of (x, y) coordinates from entry to exit,
+            inclusive, in visiting order.
+        """
         queue = [(self.entry[0], self.entry[1], [self.entry])]
         seen = {self.entry}
 
@@ -32,12 +66,25 @@ class MazeSolver:
                 move_x, move_y, wall = MOVES[direction]
                 new_x, new_y = x + move_x, y + move_y
                 if 0 <= new_x < self.width and 0 <= new_y < self.height:
-                    if not (self.grid[y][x] & wall) and (new_x, new_y) not in seen:
+                    open_wall = not (self.grid[y][x] & wall)
+                    if open_wall and (new_x, new_y) not in seen:
                         seen.add((new_x, new_y))
-                        queue.append((new_x, new_y, path + [(new_x, new_y)]))
+                        queue.append(
+                            (new_x, new_y, path + [(new_x, new_y)])
+                        )
 
+        return []
 
     def bidirectional_solve(self) -> list[tuple[int, int]]:
+        """Find the shortest path from entry to exit using bidirectional BFS.
+
+        Grows two BFS frontiers at once, one from entry and one from
+        exit, and returns as soon as they meet.
+
+        Returns:
+            The list of (x, y) coordinates from entry to exit,
+            inclusive, in visiting order.
+        """
         queue_start = [(self.entry[0], self.entry[1], [self.entry])]
         queue_end = [(self.exit[0], self.exit[1], [self.exit])]
         seen_start = {self.entry: [self.entry]}
@@ -52,9 +99,12 @@ class MazeSolver:
                 move_x, move_y, wall = MOVES[direction]
                 new_x, new_y = x + move_x, y + move_y
                 if 0 <= new_x < self.width and 0 <= new_y < self.height:
-                    if not (self.grid[y][x] & wall) and (new_x, new_y) not in seen_start:
+                    open_wall = not (self.grid[y][x] & wall)
+                    if open_wall and (new_x, new_y) not in seen_start:
                         seen_start[(new_x, new_y)] = path + [(new_x, new_y)]
-                        queue_start.append((new_x, new_y, path + [(new_x, new_y)]))
+                        queue_start.append(
+                            (new_x, new_y, path + [(new_x, new_y)])
+                        )
 
             x, y, path = queue_end.pop(0)
             if (x, y) in seen_start:
@@ -64,6 +114,10 @@ class MazeSolver:
                 move_x, move_y, wall = MOVES[direction]
                 new_x, new_y = x + move_x, y + move_y
                 if 0 <= new_x < self.width and 0 <= new_y < self.height:
-                    if not (self.grid[y][x] & wall) and (new_x, new_y) not in seen_end:
+                    open_wall = not (self.grid[y][x] & wall)
+                    if open_wall and (new_x, new_y) not in seen_end:
                         seen_end[(new_x, new_y)] = path + [(new_x, new_y)]
-                        queue_end.append((new_x, new_y, path + [(new_x, new_y)]))
+                        queue_end.append(
+                            (new_x, new_y, path + [(new_x, new_y)])
+                        )
+        return []
