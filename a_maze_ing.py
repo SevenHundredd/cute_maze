@@ -224,8 +224,12 @@ def main() -> None:
                                               " value! Keeping current seed.")
                             case _:
                                 input("Keeping current seed.")
-                        generator.perfect = (new_perfect if new_perfect
-                                             else generator.perfect)
+                        generator.perfect = (
+                            new_perfect.capitalize() == "True" or 
+                            new_perfect.capitalize() == "Yes" or 
+                            new_perfect.capitalize() == "Y" or 
+                            new_perfect == "1"
+                        ) if new_perfect else generator.perfect
                         generator.generate()
                         show_solution = False
                         solution_path = []
