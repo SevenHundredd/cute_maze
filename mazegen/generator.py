@@ -105,6 +105,7 @@ class MazeGenerator(BaseModel):
     @field_validator('output_file', mode='before')
     @classmethod
     def validate_output_file(cls, value: str) -> str:
+        """Ensure the output file path is a non-empty string."""
         if isinstance(value, str) and value == '':
             return "maze.txt"
         elif isinstance(value, str):
@@ -314,6 +315,9 @@ class MazeGenerator(BaseModel):
         self._grid = [
             [15 for _ in range(self.width)] for _ in range(self.height)
         ]
+        self._ignore = set()
+        self._generation_path = []
+        self._allowed = True
         if self.seed is not None:
             random.seed(self.seed)
         self.get_pattern_42()

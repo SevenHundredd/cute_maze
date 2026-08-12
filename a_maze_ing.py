@@ -21,7 +21,6 @@ def main() -> None:
     maze, then loops on a text menu until the user quits or an
     unhandled error/KeyboardInterrupt occurs.
     """
-
     config_file = sys.argv[1]
     try:
         generator = load_config(config_file)
@@ -77,10 +76,10 @@ def main() -> None:
                     "\n⚠️  Maze dimensions are too small to print the "
                     "42 pattern. (Minimum 9*7)"
                 )
-            elif generator.is_allowed() is False:
+            elif generator._allowed is False:
                 print(
-                    "\n⚠️  Entry or exit point is in the 42 pattern. "
-                    "The 42 pattern is excluded from the maze."
+                    "\n⚠️  Entry or exit point is inside the '42' pattern. "
+                    "The pattern will be skipped for this generation."
                 )
             inside = True
             print(f"\n[1] {solve_label}")
@@ -228,7 +227,6 @@ def main() -> None:
                                 input("Keeping current seed.")
                         generator.perfect = (bool(new_perfect) if new_perfect
                                              else generator.perfect)
-                        generator.set_generation_path([])
                         generator.generate()
                         show_solution = False
                         solution_path = []
