@@ -28,5 +28,5 @@ lint-strict:
 
 build:
 	$(PYTHON) -m build
-	@mv dist/*.whl .
+	mv dist/*.whl .
 	make clean

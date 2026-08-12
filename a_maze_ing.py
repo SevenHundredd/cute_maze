@@ -7,10 +7,16 @@ or edit the configuration on the fly.
 """
 import sys
 import random
-from mazegen import MazeSolver, load_config, export_maze
-from mazegen.custom_tools import (animate_dfs_generation, animate_bfs,
-                                  clear_screen, animate_path, maze_frame,
-                                  animated_frame, THEMES)
+try:
+    from mazegen import MazeSolver, load_config, export_maze
+    from mazegen.custom_tools import (animate_dfs_generation, animate_bfs,
+                                      clear_screen, animate_path, maze_frame,
+                                      animated_frame, THEMES)
+except ImportError as e:
+    raise SystemExit(
+        f"Error importing modules: {e}. "
+        "Make sure you have installed the required dependencies."
+    )
 
 
 def main() -> None:
@@ -225,9 +231,9 @@ def main() -> None:
                             case _:
                                 input("Keeping current seed.")
                         generator.perfect = (
-                            new_perfect.capitalize() == "True" or 
-                            new_perfect.capitalize() == "Yes" or 
-                            new_perfect.capitalize() == "Y" or 
+                            new_perfect.capitalize() == "True" or
+                            new_perfect.capitalize() == "Yes" or
+                            new_perfect.capitalize() == "Y" or
                             new_perfect == "1"
                         ) if new_perfect else generator.perfect
                         generator.generate()
