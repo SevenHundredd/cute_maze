@@ -7,7 +7,7 @@ or edit the configuration on the fly.
 """
 import sys
 import random
-from mazegen import MazeSolver, load_config,export_maze
+from mazegen import MazeSolver, load_config, export_maze
 from mazegen.custom_tools import (animate_dfs_generation, animate_bfs,
                                   clear_screen, animate_path, maze_frame,
                                   animated_frame, THEMES)
