@@ -68,7 +68,7 @@ class MazeGenerator(BaseModel):
     entry: tuple[int, int] = Field(..., alias='ENTRY')
     exit: tuple[int, int] = Field(..., alias='EXIT')
     output_file: str = Field(default="maze.txt", alias='OUTPUT_FILE')
-    perfect: str | bool = Field(default=True, alias='PERFECT')
+    perfect: bool = Field(default=True, alias='PERFECT')
     seed: Optional[int] = Field(default=None, alias='SEED')
     _grid: list[list[int]]
     _ignore: set[tuple[int, int]] = set()
